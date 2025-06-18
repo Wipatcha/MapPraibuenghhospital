@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="แผนผังอาคารและเส้นทางภายในโรงพยาบาลไพรบึง พร้อมดูภาพขยายได้ทันที" />
+  <meta name="keywords" content="แผนผังโรงพยาบาล, ผังอาคาร, โรงพยาบาลไพรบึง, เส้นทางภายในโรงพยาบาล" />
+  <meta name="author" content="แผนก IT โรงพยาบาลไพรบึง" />
+  <meta name="theme-color" content="#005792" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta property="og:title" content="แผนผังโรงพยาบาลไพรบึง" />
+  <meta property="og:description" content="ดูแผนผังอาคารและเส้นทางภายในโรงพยาบาลไพรบึง แบบโต้ตอบได้" />
+  <meta property="og:image" content="https://yourdomain.com/รูปภาพ/แผนผัง.png" />
+  <meta property="og:url" content="https://yourdomain.com/" />
+  <meta property="og:type" content="website" />
+  <title>แผนผังโรงพยาบาลไพรบึง</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/@panzoom/panzoom@9.4.0/dist/panzoom.min.js"></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="header-banner">
+    <div class="logo-wrapper">
+      <img src="รูปภาพ/logo.png" alt="โรงพยาบาลไพรบึง" class="logo" />
+      <div class="logo-text-group">
+        <div class="logo-thai">โรงพยาบาลไพรบึง</div>
+        <hr class="short-line" />
+        <div class="logo-eng">Praibueng Hospital</div>
+      </div>
+    </div>
+    <button class="dark-toggle" onclick="toggleDarkMode()">🌓</button>
+  </div>
+
+  <div class="main-layout">
+    <!-- Sidebar ซ้าย -->
+    <nav class="sidebar sidebar-left">
+      <ul>
+        <li>
+          <span class="menu-toggle" onclick="toggleSubmenu('submenu-left', this)" aria-expanded="false">
+            <span class="arrow">▶</span> ผังอาคาร
+          </span>
+          <ul id="submenu-left" class="submenu" aria-hidden="true">
+            <li onclick="showPopup('รูปภาพ/แผนผังOPD.png')">OPD</li>
+            <li onclick="showPopup('รูปภาพ/แผนผังตึกกลาง.png')">ตึกกลาง</li>
+            <li onclick="showPopup('รูปภาพ/กายภาพ.jpg')">ตึกกายภาพ</li>
+            <li onclick="showPopup('รูปภาพ/IPD.jpg')">IPD</li>
+            <li onclick="showPopup('รูปภาพ/ตึกอำนวยการ 1.png')">ตึกอำนวยการ</li>
+            <li onclick="showPopupWithTwoImages('รูปภาพ/PCC1.png','รูปภาพ/PCC2.png')">PCC</li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- เนื้อหาหลัก -->
+    <main class="map-container">
+      <h1>แผนผังโรงพยาบาลไพรบึง</h1>
+      <img src="รูปภาพ/แผนผัง.png" alt="แผนผังอาคาร" />
+      <div class="caption">แผนผังแสดงตำแหน่งอาคาร</div>
+    </main>
+
+    <!-- Sidebar ขวา -->
+    <nav class="sidebar sidebar-right">
+      <ul>
+        <li>
+          <span class="menu-toggle" onclick="toggleSubmenu('submenu-right', this)" aria-expanded="false">
+            <span class="arrow">▶</span> เส้นทางต่างๆ
+          </span>
+          <ul id="submenu-right" class="submenu" aria-hidden="true">
+            <li onclick="showPopup('รูปภาพ/มูลฝอยติดเชื้อ.png')">เส้นทางขนย้ายมูลฝอยติดเชื้อ</li>
+            <li onclick="showPopup('รูปภาพ/เส้นทางน้ำ.png')">เส้นทางระบายน้ำ</li>
+            <li onclick="showPopup('รูปภาพ/เส้นทางน้ำ.png')">เส้นทางหนีไฟ</li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <footer>
+    © 2025 โรงพยาบาลไพรบึง. พัฒนาโดยแผนก IT.
+  </footer>
+
+  <!-- Popup -->
+  <div class="overlay" id="overlay" onclick="hidePopup()"></div>
+<div class="popup" id="popup" role="dialog" aria-modal="true">
+  <div class="popup-content">
+    <div class="popup-controls">
+      <button class="btn-fullscreen" onclick="toggleFullScreen()" aria-label="Fullscreen">🖵</button>
+      <button class="btn-close" onclick="hidePopup()" aria-label="Close popup">✖</button>
+    </div>
+    <div class="img-wrapper multi vertical">
+      <div class="zoom-img-container" id="img1-container">
+        <img id="popupImg1" src="" alt="รูปที่ 1" />
+      </div>
+      <div class="zoom-img-container" id="img2-container">
+        <img id="popupImg2" src="" alt="รูปที่ 2" />
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
