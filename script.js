@@ -225,3 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
     item.addEventListener('mouseenter', playHoverSound);
   });
 });
+
+function toggleSidebar() {
+  document.querySelector('.sidebar').classList.toggle('show');
+}
