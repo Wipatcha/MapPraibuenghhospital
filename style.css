@@ -558,3 +558,55 @@ body.dark .zoom-controls button.fullscreen-btn {
     padding: 4px 8px;
   }
 }
+@media (max-width: 768px) {
+  .main-layout {
+    flex-direction: column;
+    padding: 0.5rem;
+  }
+
+  .sidebar {
+    display: none; /* ซ่อน sidebar บนมือถือ */
+    width: 100%;
+  }
+
+  .sidebar.active {
+    display: block;
+    background-color: #f0f0f0;
+    margin-bottom: 1rem;
+  }
+
+  .menu-toggle-button {
+    display: block;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+    background: #005792;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 20px;
+    cursor: pointer;
+  }
+}
+
+/* ปุ่ม ☰ สำหรับ desktop ซ่อนไว้ */
+.menu-toggle-button {
+  display: none;
+}
+
+/* ปรับขนาดโลโก้บนมือถือ */
+@media (max-width: 480px) {
+  .logo-wrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .logo {
+    max-width: 80px;
+  }
+
+  .logo-text-group {
+    text-align: center;
+  }
