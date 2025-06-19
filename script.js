@@ -133,6 +133,7 @@ function hidePopup() {
   document.getElementById('overlay').classList.remove('show');
   document.getElementById('popupImg1').src = '';
   document.getElementById('popupImg2').src = '';
+  document.getElementById("img2-container").style.display = "none"
   if (panzoomInstance) {
     panzoomInstance.dispose();
     panzoomInstance = null;
@@ -231,4 +232,8 @@ function toggleSidebar() {
   document.querySelectorAll('.sidebar').forEach(sidebar => {
     sidebar.classList.toggle('active');
   });
+}
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobileMenu');
+  menu.classList.toggle('hidden');
 }
