@@ -33,7 +33,10 @@ body.dark {
   border-bottom-right-radius: 0;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
-
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
 body.dark .header-banner {
   background-color: #222;
   color: white;
@@ -200,7 +203,7 @@ body.dark .submenu li:hover {
 
 .map-container img {
   max-width: 100%;
-  height: auto;
+  height: 100%;
   border: 1px solid #ccc;
   border-radius: 10px;
 }
@@ -273,11 +276,13 @@ body.dark footer {
   display: flex;
   opacity: 1;
   pointer-events: auto;
+  max-width: 95vw;
+  max-height: auto;
 }
 
 /* เนื้อหาใน popup */
 .popup-content {
-  max-width: 90vw;
+  max-width: 95vw;
   max-height: none;
   height: auto;
   display: flex;
@@ -357,7 +362,7 @@ body.dark .popup-content {
 
 /* ปรับขนาดรูปใน img-wrapper */
 .img-wrapper img {
-  max-width: 90vw;
+  max-width: 95vw;
   max-height: none;
   object-fit: contain;
   display: block;
@@ -489,15 +494,7 @@ body.dark .zoom-controls button.fullscreen-btn {
   transform: scale(1.1);
   color: #005792;
 }
-/* ปุ่ม ☰ ซ่อนไว้ก่อน (Desktop) */
-.menu-toggle-button {
-  background: transparent;
-  border: none;
-  font-size: 24px;
-  color: white;
-  cursor: pointer;
-  display: none;
-}
+
 
 /* ปรับขนาดโลโก้บนจอเล็กมาก */
 @media (max-width: 480px) {
@@ -514,26 +511,50 @@ body.dark .zoom-controls button.fullscreen-btn {
     text-align: center;
   }
 }
+/* ปุ่ม ☰ ซ่อนไว้ก่อน (Desktop) */
+.menu-toggle-button {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: white;
+  cursor: pointer;
+  display: none;
+}
 
 /* ปรับสำหรับมือถือทั่วไป */
 @media (max-width: 768px) {
   .header-banner {
-    flex-direction: column;
-    align-items: flex-start;
+    font-display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
     gap: 0.5rem;
     padding: 0.25rem 0.5rem;
+    flex-wrap: nowrap;
   }
-
+.logo-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
   .logo {
-    height: 50px;
+    height: 40px;
+    width: auto;
+    flex-shrink: 0;
   }
-
+.logo-text-group{
+   text-align: left;
+}
   .logo-text-group .logo-thai {
-    font-size: 16px;
+    font-size: 1.1rem;
+    position: relative;
   }
 
   .logo-text-group .logo-eng {
-    font-size: 12px;
+    font-size: 0.9rem;
   }
 
   .short-line {
@@ -572,11 +593,11 @@ body.dark .zoom-controls button.fullscreen-btn {
 
   .menu-toggle-button {
     display: block;
-    position: fixed;
+    position: center;
     top: 10px;
     right: 10px;
     z-index: 1000;
-    background: #005792;
+    background: none;
     color: #fff;
     border: none;
     border-radius: 6px;
@@ -612,4 +633,81 @@ body.dark .zoom-controls button.fullscreen-btn {
     font-size: 16px;
     padding: 4px 8px;
   }
+  .mobile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #005792;
+  color: white;
+  padding: 0.5rem 1rem;
+  position: fixed;
+  z-index: 1000;
 }
+
+.menu-toggle {
+  font-size: 20px;
+  background: none;
+  border: none;
+  color: rgb(0, 0, 0);
+}
+
+.mobile-logo {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.mobile-logo img {
+  height: 40px;
+}
+
+.mobile-menu {
+  background-color: #222;
+  color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  padding: 1rem;
+  z-index: 999;
+  transition: transform 0.3s ease;
+}
+
+.mobile-menu.hidden {
+  transform: translateY(-100%);
+}
+
+.mobile-menu ul {
+  list-style: none;
+  padding: 0;
+}
+
+.mobile-menu ul li {
+  padding: 0.75rem 0;
+}
+
+.mobile-menu a {
+  color: white;
+  text-decoration: none;
+}
+
+details summary {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.close-menu {
+  margin-top: 1rem;
+  background: #444;
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  width: 100%;
+}
+.dark-toggle {
+    font-size: 20px;
+  }
+}
+
+
