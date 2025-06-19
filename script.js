@@ -226,6 +226,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+
 function toggleSidebar() {
-  document.querySelector('.sidebar').classList.toggle('show');
+  document.querySelectorAll('.sidebar').forEach(sidebar => {
+    sidebar.classList.toggle('active');
+  });
 }
