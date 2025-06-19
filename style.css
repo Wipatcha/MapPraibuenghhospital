@@ -489,13 +489,39 @@ body.dark .zoom-controls button.fullscreen-btn {
   transform: scale(1.1);
   color: #005792;
 }
-@media (max-width: 768px) {
+/* ปุ่ม ☰ ซ่อนไว้ก่อน (Desktop) */
+.menu-toggle-button {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: white;
+  cursor: pointer;
+  display: none;
+}
 
+/* ปรับขนาดโลโก้บนจอเล็กมาก */
+@media (max-width: 480px) {
+  .logo-wrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .logo {
+    max-width: 80px;
+  }
+
+  .logo-text-group {
+    text-align: center;
+  }
+}
+
+/* ปรับสำหรับมือถือทั่วไป */
+@media (max-width: 768px) {
   .header-banner {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
-    padding: 12px;
+    padding: 0.25rem 0.5rem;
   }
 
   .logo {
@@ -503,26 +529,59 @@ body.dark .zoom-controls button.fullscreen-btn {
   }
 
   .logo-text-group .logo-thai {
-    font-size: 1.1rem;
+    font-size: 16px;
   }
 
   .logo-text-group .logo-eng {
-    font-size: 0.9rem;
+    font-size: 12px;
+  }
+
+  .short-line {
+    margin: 2px 0;
   }
 
   .main-layout {
     flex-direction: column;
+    padding: 0.5rem;
   }
 
   .sidebar {
+    display: none;
     width: 100%;
     padding: 1rem;
     border-radius: 0;
     box-shadow: none;
   }
 
+  .sidebar.active {
+    display: block;
+    background-color: #f0f0f0;
+    margin-bottom: 1rem;
+  }
+
   .map-container {
     padding: 1rem;
+  }
+
+  .map-container img {
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+  }
+
+  .menu-toggle-button {
+    display: block;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+    background: #005792;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 20px;
   }
 
   .popup-content {
@@ -543,11 +602,7 @@ body.dark .zoom-controls button.fullscreen-btn {
     transform: translateX(-50%);
   }
 
-  .submenu li {
-    font-size: 1rem;
-    padding: 0.6rem;
-  }
-
+  .submenu li,
   .menu-toggle {
     font-size: 1rem;
     padding: 0.6rem;
@@ -558,55 +613,3 @@ body.dark .zoom-controls button.fullscreen-btn {
     padding: 4px 8px;
   }
 }
-@media (max-width: 768px) {
-  .main-layout {
-    flex-direction: column;
-    padding: 0.5rem;
-  }
-
-  .sidebar {
-    display: none; /* ซ่อน sidebar บนมือถือ */
-    width: 100%;
-  }
-
-  .sidebar.active {
-    display: block;
-    background-color: #f0f0f0;
-    margin-bottom: 1rem;
-  }
-
-  .menu-toggle-button {
-    display: block;
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    z-index: 1000;
-    background: #005792;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 8px 12px;
-    font-size: 20px;
-    cursor: pointer;
-  }
-}
-
-/* ปุ่ม ☰ สำหรับ desktop ซ่อนไว้ */
-.menu-toggle-button {
-  display: none;
-}
-
-/* ปรับขนาดโลโก้บนมือถือ */
-@media (max-width: 480px) {
-  .logo-wrapper {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .logo {
-    max-width: 80px;
-  }
-
-  .logo-text-group {
-    text-align: center;
-  }
