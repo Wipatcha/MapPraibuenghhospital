@@ -562,7 +562,7 @@ body.dark .zoom-controls button.fullscreen-btn {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-logo-eng {
+.logo-eng {
   font-size: 6px;
   color: #eef;
   white-space: nowrap;
@@ -670,13 +670,16 @@ logo-eng {
   .menu-toggle {
     font-size: 1rem;
     padding: 0.6rem;
+    background-color: #0077b6;
+    box-shadow: #005792;
   }
 
   .popup-controls button {
     font-size: 16px;
     padding: 4px 8px;
   }
-  .mobile-header {
+  
+.mobile-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -686,12 +689,11 @@ logo-eng {
   position: fixed;
   z-index: 1000;
 }
-
 .menu-toggle {
   font-size: 20px;
   background: none;
   border: none;
-  color: rgb(0, 0, 0);
+  color: rgba(0, 0, 0, 0.26);
 }
 
 .mobile-logo {
@@ -705,29 +707,37 @@ logo-eng {
 }
 
 .mobile-menu {
-  display: block;
-  background-color: #222;
-  color: white;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);;
-  position: relative;
+  background-color: rgba(0, 0, 0, 0.199);
+  color: rgb(0, 0, 0);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   width: 100%;
-  height: auto;
-  padding: 1rem;
+  padding: 10px;
+  position: absolute;
+  top: 55px; /* ถ้าคุณมีแถบบน ให้ปรับให้พอดี */
+  left: 0;
   z-index: 999;
-  transform: translateY(0) ;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transform: translateY(-100%);
+  opacity: 0;
+  visibility: hidden;
+  transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s;
 }
-
+.mobile-menu.open {
+   transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
 .mobile-menu.hidden {
   transform: translateY(-100%);
+  overflow: hidden;
   display: none;
   max-height: 0;
-  overflow: hidden;
+
 }
 
 .mobile-menu ul {
   list-style: none;
   padding: 0;
+
 }
 
 .mobile-menu ul li {
@@ -735,21 +745,29 @@ logo-eng {
 }
 
 .mobile-menu a {
-  color: white;
+  color: rgb(0, 0, 0);
   text-decoration: none;
+  
 }
 
 details summary {
   cursor: pointer;
   font-weight: bold;
+  display: block;
+  text-align: center;
+  background-color: #2a8dcf;
+  border-radius: 12px;
+  padding: 12px;
+  color: white;
 }
 
 .close-menu {
-  margin-top: 1rem;
+  margin-top: auto;
   background: #444;
+  border-radius: 10px;
   border: none;
   color: white;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.5rem;
   width: 100%;
 }
 .dark-toggle {
@@ -763,4 +781,50 @@ details summary {
     display: none !important;
   }
 }
+details {
+  margin-bottom: 12px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  background-color: #ffffff;
+}
 
+/* ปรับสไตล์หัวข้อ summary */
+details summary {
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 18px;
+  background-color: #2a8dcf;
+  color: white;
+  padding: 14px 16px;
+  text-align: center;
+  border-radius: 0;
+}
+
+/* ลิสต์ย่อยภายในเมนู */
+details ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background-color: #3b3b3b5b;
+}
+
+/* รายการย่อย */
+details ul li {
+  padding: 12px 20px;
+  border-bottom: 1px solid #ddd;
+  font-size: 15px;
+  color: #333;
+  text-align: center;
+}
+
+/* รายการสุดท้ายไม่ต้องมีเส้นใต้ */
+details ul li:last-child {
+  border-bottom: none;
+}
+
+/* ปรับให้ tap ได้ง่ายบนมือถือ */
+details ul li:hover {
+  background-color: #e0f0ff;
+  cursor: pointer;
+}
