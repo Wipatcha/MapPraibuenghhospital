@@ -1,262 +1,830 @@
-// -----------------------------
-// 1. สลับเมนูย่อยพร้อมแอนิเมชัน
-// -----------------------------
-function toggleSubmenu(id, toggleBtn) {
-  const submenu = document.getElementById(id);
-  const isExpanded = submenu.classList.contains('show');
-  const arrow = toggleBtn.querySelector('.arrow');
-  const items = submenu.querySelectorAll('li');
+/* Reset เบื้องต้น */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-  if (isExpanded) {
-    // ซ่อนเมนูย่อย
-    toggleBtn.setAttribute('aria-expanded', 'false');
-    submenu.setAttribute('aria-hidden', 'true');
-    arrow.style.transform = 'rotate(0deg)';
+/* ตัว body และธีมปกติ + dark mode */
+body {
+  font-family: 'Sarabun', sans-serif, Arial, sans-serif;
+  background-color: #ffffff;
+  color: #222;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
 
-    items.forEach((li, i) => {
-      li.style.transitionDelay = `${(items.length - 1 - i) * 80}ms`;
-      li.style.opacity = '0';
-      li.style.transform = 'translateY(10px)';
-    });
+body.dark {
+  background-color: #121212;
+  color: #eee;
+}
 
-    const totalDelay = 80 * items.length + 300;
-    setTimeout(() => {
-      submenu.style.maxHeight = '0';
-      submenu.style.padding = '0 10px';
-      submenu.classList.remove('show');
-    }, totalDelay);
-  } else {
-    // แสดงเมนูย่อย
-    submenu.classList.add('show');
-    toggleBtn.setAttribute('aria-expanded', 'true');
-    submenu.setAttribute('aria-hidden', 'false');
-    arrow.style.transform = 'rotate(90deg)';
+/* Header แบนเนอร์ */
+.header-banner {
+  background: linear-gradient(90deg, #0077b6, #00b4d8, #a8dadc);
+  background-size: 600% 600%;
+  color: white;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+body.dark .header-banner {
+  background-color: #222;
+  color: white;
+}
 
-    submenu.style.maxHeight = submenu.scrollHeight + 'px';
-    submenu.style.padding = '10px';
+/* โลโก้ */
+.logo-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
 
-    items.forEach((li) => {
-      li.style.opacity = '0';
-      li.style.transform = 'translateY(10px)';
-      li.style.transition = 'none';
-      void li.offsetWidth; // รีเฟรช CSS เพื่อรีเซ็ต transition
-    });
+.logo {
+  height: 60px;
+}
 
-    items.forEach((li, i) => {
-      setTimeout(() => {
-        li.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-        li.style.opacity = '1';
-        li.style.transform = 'translateY(0)';
-      }, i * 80);
-    });
+.logo-text-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-thai {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.logo-eng {
+  font-size: 1rem;
+}
+
+/* เส้นขีดแบ่ง */
+.short-line {
+  width: 100%;
+  border: none;
+  border-top: 1px solid white;
+  margin: 4px 0;
+}
+
+/* ปุ่ม toggle dark mode */
+.dark-toggle {
+  font-size: 1.2rem;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+/* โครงสร้างหลัก layout sidebar + content */
+.main-layout {
+  display: flex;
+  flex: 1;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 200px;
+  padding: 1rem;
+  background-color: #f5f5f5;
+  overflow-y: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 119, 204, 0.267);
+}
+
+body.dark .sidebar {
+  background-color: #2a2a2a;
+}
+
+.sidebar ul {
+  list-style-type: none;
+}
+
+/* เมนูที่มี toggle */
+.menu-toggle {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: bold;
+  user-select: none;
+  font-size: large;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  user-select: none;
+}
+.menu-toggle:hover {
+  background-color: #0077cc80; /* เปลี่ยนสีพื้นหลัง */
+  color: rgb(4, 0, 255);              /* เปลี่ยนสีข้อความ */
+  transform: translateX(5px) scale(1.05); /* เลื่อนขวาและขยายเล็กน้อย */
+  box-shadow: 0 4px 8px rgba(0, 119, 204, 0.267);
+  border-radius: 6px;
+  padding: 6px;
+}
+
+.menu-toggle .arrow {
+  display: inline-block;
+  width: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.menu-toggle[aria-expanded="true"] .arrow {
+  transform: rotate(90deg);
+}
+
+/* ซับเมนู */
+.submenu {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+  background-color: #f9f9f9;
+  margin-top: 5px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  padding: 0 10px; /* เริ่มต้นไม่มี padding-top/bottom */
+ 
+}
+
+body.dark .submenu {
+  background-color: #333;
+  border-color: #555;
+}
+
+.submenu.show {
+  max-height: 1000px; /* ควรใช้ JS กำหนด scrollHeight แทน */
+  padding: 15px;
+}
+
+.submenu.show li {
+  opacity: 1;
+  transform: translateY(0);
+  display: block;
+}
+
+.submenu li {
+  padding: 0.7rem;
+  cursor: pointer;
+  border-bottom: 1px solid #ddd;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  border-radius: 10px;
+  user-select: none;
+  display: block;
+}
+.submenu li:hover {
+  background-color: #0077ccb4; /* เปลี่ยนสีพื้นหลัง */
+  color: rgb(255, 255, 255);              /* เปลี่ยนสีข้อความ */
+  transform: translateX(5px) scale(1.05); /* เลื่อนขวาและขยายเล็กน้อย */
+  box-shadow: 0 4px 8px rgba(0, 119, 204, 0.4);
+}
+
+body.dark .submenu li:hover {
+  background-color: #444;
+}
+
+.submenu li:last-child {
+  border-bottom: none;
+}
+
+
+/* พื้นที่แสดงแผนที่ */
+.map-container {
+  flex: 1;
+  padding: 2rem;
+  text-align: center;
+}
+
+.map-container img {
+  max-width: 100%;
+  height: 100%;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.caption {
+  margin-top: 0.8rem;
+  font-size: 0.95rem;
+  color: #666;
+}
+
+/* footer */
+footer {
+  text-align: center;
+  padding: 1rem;
+  background-color: #005792;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+body.dark footer {
+  background-color: #222;
+  color: #ccc;
+}
+
+/* Overlay พื้นหลังมืด */
+.overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.overlay.show {
+  display: flex;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Popup กึ่งกลางจอ */
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  max-width: 95vw;
+  max-height: 95vh;
+  overflow: hidden;
+  z-index: 1001;
+  display: none;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup.show {
+  display: flex;
+  opacity: 1;
+  pointer-events: auto;
+  max-width: 95vw;
+  max-height: auto;
+}
+
+/* เนื้อหาใน popup */
+.popup-content {
+  max-width: 95vw;
+  max-height: none;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background: white;
+  border-radius: 8px;
+  position: relative;
+  flex-direction: column;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+body.dark .popup-content {
+  background-color: #1e1e1e;
+  color: #eee;
+}
+
+/* ปุ่มควบคุมใน popup */
+.popup-controls {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+  display: flex;
+  gap: 8px;
+}
+
+.popup-controls button {
+  background: rgba(0,0,0,0.5);
+  border: none;
+  color: white;
+  font-size: 18px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.popup-controls .btn-fullscreen:hover {
+  background: rgba(0, 123, 255, 0.8) !important;
+}
+
+.popup-controls .btn-close:hover {
+  background: rgba(220, 53, 69, 0.8);
+}
+
+/* รูปใน popup */
+.popup-content img {
+  display: block;
+  max-width: 95vw;
+  max-height: 95vh;
+  height: auto;
+  width: auto;
+  object-fit: contain;
+  margin: 0 auto;
+  align-items: center;
+}
+
+/* wrapper สำหรับรูป */
+.img-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 95vw;
+  max-height: none;
+  overflow: hidden;
+}
+
+.img-wrapper.multi {
+  flex-direction: column;
+  gap: 16px;
+  max-height: 95vh;
+  overflow-y: auto;
+}
+
+/* ปรับขนาดรูปใน img-wrapper */
+.img-wrapper img {
+  max-width: 95vw;
+  max-height: none;
+  object-fit: contain;
+  display: block;
+}
+.img-wrapper.multi.vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  max-height: none;
+}
+
+.img-wrapper.multi img {
+  display: block;
+  max-width: 100%;
+  max-height: none;
+  height: auto;
+ 
+}
+
+/* animation popup */
+@keyframes popupFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
-// -----------------------------
-// 2. ระบบแสดง popup (1 รูป)
-// -----------------------------
-let panzoomInstance = null;
-function showPopup(src) {
-  const overlay = document.getElementById('overlay');
-  const popup = document.getElementById('popup');
-  const img1 = document.getElementById('popupImg1');
-  const img2 = document.getElementById('popupImg2');
-
-  // แสดงเฉพาะ img1
-  img1.parentElement.style.display = 'block';
-  img2.parentElement.style.display = 'none';
-  img1.src = src;
-  img1.alt = `รูปภาพ ${src.split('/').pop()}`;
-
-  overlay.classList.add('show');
-  popup.classList.add('show');
-
-  // เคลียร์ panzoom เก่าก่อน
-  if (panzoomInstance) panzoomInstance.dispose();
-
-  img1.onload = () => {
-    panzoomInstance = Panzoom(img1.parentElement, {
-      contain: 'outside',
-      maxScale: 5,
-      minScale: 1,
-      startScale: 1,
-    });
-  };
+.popup.show .popup-content {
+  animation: popupFadeIn 0.3s ease-out;
 }
 
-// -----------------------------
-// 3. popup แบบ 2 รูป
-// -----------------------------
-function showPopupWithTwoImages(src1, src2) {
-  const overlay = document.getElementById('overlay');
-  const popup = document.getElementById('popup');
-  const img1 = document.getElementById('popupImg1');
-  const img2 = document.getElementById('popupImg2');
-
-  img1.src = src1;
-  img2.src = src2;
-  img1.alt = `รูปภาพ ${src1.split('/').pop()}`;
-  img2.alt = `รูปภาพ ${src2.split('/').pop()}`;
-
-  img1.parentElement.style.display = 'block';
-  img2.parentElement.style.display = 'block';
-
-  overlay.classList.add('show');
-  popup.classList.add('show');
-
-  if (panzoomInstance) panzoomInstance.dispose();
-
-  img1.onload = () => {
-    panzoomInstance = Panzoom(img1.parentElement, {
-      contain: 'outside',
-      maxScale: 5,
-      minScale: 1,
-      startScale: 1,
-    });
-  };
-
-  img2.onload = () => {
-    Panzoom(img2.parentElement, {
-      contain: 'outside',
-      maxScale: 5,
-      minScale: 1,
-      startScale: 1,
-    });
-  };
+/* ปุ่มซูม */
+.zoom-controls {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 6px 12px;
+  border-radius: 10px;
+  z-index: 10;
 }
 
-// -----------------------------
-// 4. ปิด popup
-// -----------------------------
-function hidePopup() {
-  document.getElementById('popup').classList.remove('show');
-  document.getElementById('overlay').classList.remove('show');
-  document.getElementById('popupImg1').src = '';
-  document.getElementById('popupImg2').src = '';
-  document.getElementById("img2-container").style.display = "none"
-  if (panzoomInstance) {
-    panzoomInstance.dispose();
-    panzoomInstance = null;
+.zoom-controls button {
+  font-size: 18px;
+  background: #fff;
+  border: none;
+  padding: 5px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.zoom-controls button:hover {
+  color: #eee;
+}
+
+.zoom-controls button.fullscreen-btn {
+  font-size: 1.5em;
+  margin-left: 0.3em;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: #333;
+}
+
+.zoom-controls button.fullscreen-btn:hover {
+  color: #28a745;
+}
+
+body.dark .zoom-controls {
+  background: rgba(50, 50, 50, 0.85);
+}
+
+body.dark .zoom-controls button {
+  background-color: #444;
+  color: #eee;
+}
+
+body.dark .zoom-controls button.fullscreen-btn {
+  color: #ccc;
+}
+
+/* สำหรับซ่อนเนื้อหาแต่ยังเข้าถึงได้ด้วย screen reader */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* Fullscreen overrides */
+:fullscreen .popup-content {
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  background: black;
+}
+
+:fullscreen .popup-content img {
+  max-width: 100% !important;
+  max-height: 100% !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain;
+}
+
+/* Animated text effect */
+.animated-text {
+  display: inline-block;
+  transition: transform 0.3s ease, color 0.3s ease;
+  color: #222;
+  cursor: pointer;
+}
+
+.animated-text:hover {
+  transform: scale(1.1);
+  color: #005792;
+}
+
+
+/* ปรับขนาดโลโก้บนจอเล็กมาก */
+@media (max-width: 480px) {
+  .main-layout {
+    flex-direction: column;
   }
-   // ออกจาก fullscreen ถ้ายังอยู่ใน fullscreen
-  if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
-    } else if (document.mozCancelFullScreen) {
-      document.mozCancelFullScreen();
-    } else if (document.msExitFullscreen) {
-      document.msExitFullscreen();
-    }
+  .logo-wrapper {
+    flex-direction: column;
+    align-items: center;
   }
-}
 
-// ปิด popup เมื่อกดปุ่ม Escape
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') hidePopup();
-});
+  .logo {
+    max-width: 80px;
+  }
 
-// -----------------------------
-// 5. Fullscreen toggle
-// -----------------------------
-function toggleFullScreen() {
-  const elem = document.querySelector('.popup-content');
-  if (!document.fullscreenElement) {
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } else if (elem.webkitRequestFullscreen) {
-      elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) {
-      elem.msRequestFullscreen();
-    }
-  } else {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
-    } else if (document.msExitFullscreen) {
-      document.msExitFullscreen();
-    }
+  .logo-text-group {
+    text-align: center;
   }
 }
+/* ปุ่ม ☰ ซ่อนไว้ก่อน (Desktop) */
+.menu-toggle-button {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: white;
+  cursor: pointer;
+  display: none;
+}
 
-// ฟัง event fullscreenchange เพื่อรีเซ็ต style
-document.addEventListener('fullscreenchange', () => {
-  if (!document.fullscreenElement) {
-    console.log('Fullscreen mode exited');
-
-    // รีเซ็ต transform หรือ scale ถ้าใช้ panzoom
-    if (panzoomInstance) {
-      panzoomInstance.reset();  // หรือ dispose + สร้างใหม่ตามต้องการ
-    }
-
-    // รีเซ็ต style popup-content
-    const popupContent = document.querySelector('.popup-content');
-    if (popupContent) {
-      popupContent.style.width = '';
-      popupContent.style.height = '';
-      popupContent.style.transform = '';
-    }
+/* ปรับสำหรับมือถือทั่วไป */
+@media (max-width: 768px) {
+  .header-banner {
+    font-display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 6px 10px;
   }
-});
-
-
-// -----------------------------
-// 6. Dark mode
-// -----------------------------
-function toggleDarkMode() {
-  document.body.classList.toggle('dark');
+  .header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
-// สร้าง Audio object สำหรับเสียง hover
-const hoverSound = new Audio('sounds/hoversound.wav');
+.logo-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+  margin-left: 0;
+  margin-right: 0;
+}
+  .logo {
+    height: 30px;
+    width: auto;
+    flex-shrink: 0;
+  }
+  .logo-thai {
+  font-size: 10px;
+  font-weight: bold;
+  margin-left: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.logo-eng {
+  font-size: 6px;
+  color: #eef;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.logo-text-group{
+   display: flex;
+   flex-direction: column;
+   line-height: 1.2;
+   white-space: nowrap;
+}
+  .logo-text-group .logo-thai {
+    position: relative;
+    font-size: 10px;
+    margin: 0;
 
-// ฟังก์ชันเล่นเสียงตอน hover
-function playHoverSound() {
-  hoverSound.currentTime = 0; // เล่นซ้ำตั้งแต่ต้น
-  hoverSound.play().catch(() => {
-    // เงียบถ้า browser block autoplay
-  });
+  }
+
+  .logo-text-group .logo-eng {
+    font-size: 6px;
+    margin: 0;
+  }
+.logo-wrapper img {
+  margin: 0;
+  padding: 0;
+  display: block; /* ป้องกันช่องว่าง inline */
+}
+  .short-line {
+    margin: 2px 0;
+  }
+
+  .main-layout {
+    flex-direction: column;
+    padding: 0.5rem;
+  }
+
+  .sidebar {
+    display: none;
+    width: 100%;
+    padding: 1rem;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .sidebar.active {
+    display: block;
+    background-color: #f0f0f0;
+    margin-bottom: 1rem;
+  }
+
+ .map-container h1 {
+  font-family: 'Sarabun', sans-serif;
+  font-size: 1.4rem; /* ขนาดปกติบนจอใหญ่ */
+  text-align: center;
+  margin: 20px 0 10px;
 }
 
-// เพิ่ม event listener ให้กับ submenu ทุกตัวตอนโหลดเสร็จ
-document.addEventListener('DOMContentLoaded', () => {
-  const submenuItems = document.querySelectorAll('.submenu li');
-  submenuItems.forEach(item => {
-    item.addEventListener('mouseenter', playHoverSound);
-  });
-});
+  .map-container img {
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+  }
 
-
-function toggleSidebar() {
-  document.querySelectorAll('.sidebar').forEach(sidebar => {
-    sidebar.classList.toggle('active');
-  });
+  .menu-toggle-button {
+    display: block;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+    background: none;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 20px;
+  }
+.menu-toggle-button,
+.dark-toggle {
+  font-size: 20px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
 }
+  .popup-content {
+    max-width: 100vw;
+    max-height: 100vh;
+    padding: 1rem;
+  }
 
+  .popup-content img {
+    max-width: 100%;
+    max-height: 80vh;
+  }
 
+  .zoom-controls {
+    top: auto;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 
-function toggleMobileMenu() {
-  const menu = document.getElementById('mobileMenu');
-  menu.classList.toggle('open');
-}
-function toggleMobileMenu() {
-  const menu = document.getElementById('mobileMenu');
+  .submenu li,
+  .menu-toggle {
+    font-size: 1rem;
+    padding: 0.6rem;
+    background-color: #0077b6;
+    box-shadow: #005792;
+  }
+
+  .popup-controls button {
+    font-size: 16px;
+    padding: 4px 8px;
+  }
   
-  // ถ้าเมนูกำลังเปิดอยู่ให้ปิด (remove class open)
-  if (menu.classList.contains('open')) {
-    menu.classList.remove('open');
-    // รอสักครู่ให้แอนิเมชั่น max-height หมด แล้วซ่อนด้วย hidden
-    setTimeout(() => {
-      menu.classList.add('hidden');
-    }, 400); // เวลา 400ms ต้องตรงกับ CSS transition
-  } else {
-    // ถ้าเมนูปิดอยู่ ให้แสดงเมนูก่อน (เอา hidden ออก)
-    menu.classList.remove('hidden');
-    // รอ next tick แล้วเพิ่ม class open เพื่อให้เกิดแอนิเมชั่น
-    setTimeout(() => {
-      menu.classList.add('open');
-    }, 10);
-  }
+.mobile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #005792;
+  color: white;
+  padding: 0.5rem 1rem;
+  position: fixed;
+  z-index: 1000;
+}
+.menu-toggle {
+  font-size: 20px;
+  background: none;
+  border: none;
+  color: rgba(0, 0, 0, 0.26);
 }
 
+.mobile-logo {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.mobile-logo img {
+  height: 40px;
+}
+
+.mobile-menu {
+  background-color: rgba(0, 0, 0, 0.199);
+  color: rgb(0, 0, 0);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  width: 100%;
+  padding: 10px;
+  position: absolute;
+  top: 55px; /* ถ้าคุณมีแถบบน ให้ปรับให้พอดี */
+  left: 0;
+  z-index: 999;
+  transform: translateY(-100%);
+  opacity: 0;
+  visibility: hidden;
+  transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s;
+}
+.mobile-menu.open {
+   transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+.mobile-menu.hidden {
+  transform: translateY(-100%);
+  overflow: hidden;
+  display: none;
+  max-height: 0;
+
+}
+
+.mobile-menu ul {
+  list-style: none;
+  padding: 0;
+
+}
+
+.mobile-menu ul li {
+  padding: 0.75rem 0;
+}
+
+.mobile-menu a {
+  color: rgb(0, 0, 0);
+  text-decoration: none;
+  
+}
+
+details summary {
+  cursor: pointer;
+  font-weight: bold;
+  display: block;
+  text-align: center;
+  background-color: #2a8dcf;
+  border-radius: 12px;
+  padding: 12px;
+  color: white;
+}
+
+.close-menu {
+  margin-top: auto;
+  background: #444;
+  border-radius: 10px;
+  border: none;
+  color: white;
+  padding: 0.5rem 0.5rem;
+  width: 100%;
+}
+.dark-toggle {
+    font-size: 20px;
+  }
+
+}
+/* ซ่อนเมนูมือถือในหน้าจอใหญ่ */
+@media (min-width: 769px) {
+  #mobileMenu {
+    display: none !important;
+  }
+}
+details {
+  margin-bottom: 12px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  background-color: #ffffff;
+}
+
+/* ปรับสไตล์หัวข้อ summary */
+details summary {
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 18px;
+  background-color: #2a8dcf;
+  color: white;
+  padding: 14px 16px;
+  text-align: center;
+  border-radius: 0;
+}
+
+/* ลิสต์ย่อยภายในเมนู */
+details ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background-color: #3b3b3b5b;
+}
+
+/* รายการย่อย */
+details ul li {
+  padding: 12px 20px;
+  border-bottom: 1px solid #ddd;
+  font-size: 15px;
+  color: #333;
+  text-align: center;
+}
+
+/* รายการสุดท้ายไม่ต้องมีเส้นใต้ */
+details ul li:last-child {
+  border-bottom: none;
+}
+
+/* ปรับให้ tap ได้ง่ายบนมือถือ */
+details ul li:hover {
+  background-color: #e0f0ff;
+  cursor: pointer;
+}
