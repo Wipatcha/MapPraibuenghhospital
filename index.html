@@ -23,8 +23,7 @@
   <script src="script.js" defer></script>
 </head>
 <body>
-  <div class="header-banner"> 
-  
+  <div class="header-banner">
     <div class="logo-wrapper">
       <img src="รูปภาพ/logo.png" alt="โรงพยาบาลไพรบึง" class="logo" />
       <div class="logo-text-group">
@@ -33,9 +32,41 @@
         <div class="logo-eng">Praibueng Hospital</div>
       </div>
     </div>
-    <button class="menu-toggle-button" onclick="toggleSidebar()">☰</button>
+    <button class="menu-toggle-button" onclick="toggleMobileMenu()">☰</button>
     <button class="dark-toggle" onclick="toggleDarkMode()">🌓</button>
   </div>
+
+  <!-- เมนูสำหรับมือถือ -->
+  <div id="mobileMenu" class="mobile-menu hidden">
+
+    <ul>
+      <li>
+        <details>
+          <summary>ผังอาคาร</summary>
+          <ul>
+            <li onclick="showPopup('รูปภาพ/แผนผังOPD.png')">OPD</li>
+            <li onclick="showPopup('รูปภาพ/แผนผังตึกกลาง.png')">ตึกกลาง</li>
+            <li onclick="showPopup('รูปภาพ/กายภาพ.jpg')">ตึกกายภาพ</li>
+            <li onclick="showPopup('รูปภาพ/IPD.jpg')">IPD</li>
+            <li onclick="showPopup('รูปภาพ/ตึกอำนวยการ 1.png')">ตึกอำนวยการ</li>
+            <li onclick="showPopupWithTwoImages('รูปภาพ/PCC1.png','รูปภาพ/PCC2.png')">PCC</li>
+          </ul>
+        </details>
+      </li>
+      <li>
+        <details>
+          <summary>เส้นทางต่างๆ</summary>
+          <ul>
+            <li onclick="showPopup('รูปภาพ/มูลฝอยติดเชื้อ.png')">เส้นทางขนย้ายมูลฝอยติดเชื้อ</li>
+            <li onclick="showPopup('รูปภาพ/เส้นทางน้ำ.png')">เส้นทางระบายน้ำ</li>
+            <li onclick="showPopup('รูปภาพ/เส้นทางน้ำ.png')">เส้นทางหนีไฟ</li>
+          </ul>
+        </details>
+      </li>
+      <li><button class="close-menu" onclick="toggleMobileMenu()">ปิดเมนู ✖</button></li>
+    </ul>
+  </div>
+
   <div class="main-layout">
     <!-- Sidebar ซ้าย -->
     <nav class="sidebar sidebar-left">
@@ -86,21 +117,21 @@
 
   <!-- Popup -->
   <div class="overlay" id="overlay" onclick="hidePopup()"></div>
-<div class="popup" id="popup" role="dialog" aria-modal="true">
-  <div class="popup-content">
-    <div class="popup-controls">
-      <button class="btn-fullscreen" onclick="toggleFullScreen()" aria-label="Fullscreen">🖵</button>
-      <button class="btn-close" onclick="hidePopup()" aria-label="Close popup">✖</button>
-    </div>
-    <div class="img-wrapper multi vertical">
-      <div class="zoom-img-container" id="img1-container">
-        <img id="popupImg1" src="" alt="รูปที่ 1" />
+  <div class="popup" id="popup" role="dialog" aria-modal="true">
+    <div class="popup-content">
+      <div class="popup-controls">
+        <button class="btn-fullscreen" onclick="toggleFullScreen()" aria-label="Fullscreen">🖵</button>
+        <button class="btn-close" onclick="hidePopup()" aria-label="Close popup">✖</button>
       </div>
-      <div class="zoom-img-container" id="img2-container">
-        <img id="popupImg2" src="" alt="รูปที่ 2" />
+      <div class="img-wrapper multi vertical">
+        <div class="zoom-img-container" id="img1-container">
+          <img id="popupImg1" src="" alt="รูปที่ 1" />
+        </div>
+        <div class="zoom-img-container" id="img2-container">
+          <img id="popupImg2" src="" alt="รูปที่ 2" />
+        </div>
       </div>
     </div>
   </div>
-</div>
 </body>
 </html>
