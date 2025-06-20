@@ -237,3 +237,22 @@ function toggleMobileMenu() {
   const menu = document.getElementById('mobileMenu');
   menu.classList.toggle('hidden');
 }
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobileMenu');
+  
+  // ถ้าเมนูกำลังเปิดอยู่ให้ปิด (remove class open)
+  if (menu.classList.contains('open')) {
+    menu.classList.remove('open');
+    // รอสักครู่ให้แอนิเมชั่น max-height หมด แล้วซ่อนด้วย hidden
+    setTimeout(() => {
+      menu.classList.add('hidden');
+    }, 400); // เวลา 400ms ต้องตรงกับ CSS transition
+  } else {
+    // ถ้าเมนูปิดอยู่ ให้แสดงเมนูก่อน (เอา hidden ออก)
+    menu.classList.remove('hidden');
+    // รอ next tick แล้วเพิ่ม class open เพื่อให้เกิดแอนิเมชั่น
+    setTimeout(() => {
+      menu.classList.add('open');
+    }, 10);
+  }
+}
