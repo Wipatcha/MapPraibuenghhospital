@@ -233,9 +233,12 @@ function toggleSidebar() {
     sidebar.classList.toggle('active');
   });
 }
+
+
+
 function toggleMobileMenu() {
   const menu = document.getElementById('mobileMenu');
-  menu.classList.toggle('hidden');
+  menu.classList.toggle('open');
 }
 function toggleMobileMenu() {
   const menu = document.getElementById('mobileMenu');
@@ -254,5 +257,22 @@ function toggleMobileMenu() {
     setTimeout(() => {
       menu.classList.add('open');
     }, 10);
+  }
+}
+function fullscreenImage() {
+  const img1 = document.getElementById('popupImg1');
+  const img2 = document.getElementById('popupImg2');
+
+  // เลือกภาพที่กำลังแสดงอยู่
+  const activeImage = img2 && img2.src && img2.parentElement.style.display !== 'none' ? img2 : img1;
+
+  if (activeImage.requestFullscreen) {
+    activeImage.requestFullscreen();
+  } else if (activeImage.webkitRequestFullscreen) {
+    activeImage.webkitRequestFullscreen();
+  } else if (activeImage.msRequestFullscreen) {
+    activeImage.msRequestFullscreen();
+  } else {
+    alert("อุปกรณ์ของคุณไม่รองรับ Fullscreen");
   }
 }
