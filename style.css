@@ -657,6 +657,7 @@ body.dark .zoom-controls button.fullscreen-btn {
   .popup-content img {
     max-width: 100%;
     max-height: 80vh;
+    touch-action: pinch-zoom;
   }
 
   .zoom-controls {
@@ -775,6 +776,17 @@ details summary {
   }
 
 }
+.fullscreen-btn {
+  margin-top: 10px;
+  padding: 10px 16px;
+  font-size: 16px;
+  background: #2a8dcf;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
 /* ซ่อนเมนูมือถือในหน้าจอใหญ่ */
 @media (min-width: 769px) {
   #mobileMenu {
@@ -828,3 +840,4 @@ details ul li:hover {
   background-color: #e0f0ff;
   cursor: pointer;
 }
+
