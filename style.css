@@ -92,12 +92,12 @@ body.dark .header-banner {
 
 /* Sidebar */
 .sidebar {
-  width: 200px;
-  padding: 1rem;
-  background-color: #f5f5f5;
+  width: 250px;
+  padding: 2rem;
+  background-color: transparent;
   overflow-y: auto;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 119, 204, 0.267);
+ 
 }
 
 body.dark .sidebar {
@@ -115,13 +115,14 @@ body.dark .sidebar {
   cursor: pointer;
   font-weight: bold;
   user-select: none;
-  font-size: large;
+  font-size: 20px;
   transition: background-color 0.3s ease, transform 0.3s ease;
   user-select: none;
+  padding-left: 18px;
 }
 .menu-toggle:hover {
   background-color: #0077cc80; /* เปลี่ยนสีพื้นหลัง */
-  color: rgb(4, 0, 255);              /* เปลี่ยนสีข้อความ */
+  color: rgb(0, 81, 255);              /* เปลี่ยนสีข้อความ */
   transform: translateX(5px) scale(1.05); /* เลื่อนขวาและขยายเล็กน้อย */
   box-shadow: 0 4px 8px rgba(0, 119, 204, 0.267);
   border-radius: 6px;
@@ -130,7 +131,7 @@ body.dark .sidebar {
 
 .menu-toggle .arrow {
   display: inline-block;
-  width: 1rem;
+  width: 1.5rem;
   transition: transform 0.3s ease;
 }
 
@@ -199,6 +200,13 @@ body.dark .submenu li:hover {
   flex: 1;
   padding: 2rem;
   text-align: center;
+  width: 100%;
+  height: 100%;
+  max-width: 80%;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  margin: 20px auto;
 }
 
 .map-container img {
@@ -839,5 +847,37 @@ details ul li:last-child {
 details ul li:hover {
   background-color: #e0f0ff;
   cursor: pointer;
+}
+.map-container1 {
+  width: 100%;
+  max-width: 600px;
+  height: 300px;
+  overflow: hidden;
+  border-radius: 12px;
+  margin: 50px auto;
+  position: relative;
+}
+.home-button {
+  font-size: 16px;
+  padding: 8px 12px;
+  color: white;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  margin-right: 10px;
+  text-decoration: underline;
+}
+.home-button :hover{
+  padding: 0.7rem;
+  cursor: pointer;
+  border-bottom: 1px solid #ddd;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  border-radius: 10px;
+  user-select: none;
+  display: block;
+  background-color: #0077b6;
+  text-underline-position: under;
 }
 
