@@ -1,6 +1,3 @@
-// -----------------------------
-// 1. สลับเมนูย่อยพร้อมแอนิเมชัน
-// -----------------------------
 function toggleSubmenu(id, toggleBtn) {
   const submenu = document.getElementById(id);
   const isExpanded = submenu.classList.contains('show');
@@ -8,30 +5,24 @@ function toggleSubmenu(id, toggleBtn) {
   const items = submenu.querySelectorAll('li');
 
   if (isExpanded) {
-    // ซ่อนเมนูย่อย
     toggleBtn.setAttribute('aria-expanded', 'false');
     submenu.setAttribute('aria-hidden', 'true');
     arrow.style.transform = 'rotate(0deg)';
-
     items.forEach((li, i) => {
       li.style.transitionDelay = `${(items.length - 1 - i) * 80}ms`;
       li.style.opacity = '0';
       li.style.transform = 'translateY(10px)';
     });
-
-    const totalDelay = 80 * items.length + 300;
     setTimeout(() => {
       submenu.style.maxHeight = '0';
       submenu.style.padding = '0 10px';
       submenu.classList.remove('show');
-    }, totalDelay);
+    }, 80 * items.length + 300);
   } else {
-    // แสดงเมนูย่อย
     submenu.classList.add('show');
     toggleBtn.setAttribute('aria-expanded', 'true');
     submenu.setAttribute('aria-hidden', 'false');
     arrow.style.transform = 'rotate(90deg)';
-
     submenu.style.maxHeight = submenu.scrollHeight + 'px';
     submenu.style.padding = '10px';
 
@@ -39,7 +30,7 @@ function toggleSubmenu(id, toggleBtn) {
       li.style.opacity = '0';
       li.style.transform = 'translateY(10px)';
       li.style.transition = 'none';
-      void li.offsetWidth; // รีเฟรช CSS เพื่อรีเซ็ต transition
+      void li.offsetWidth;
     });
 
     items.forEach((li, i) => {
@@ -53,173 +44,146 @@ function toggleSubmenu(id, toggleBtn) {
 }
 
 // -----------------------------
-// 2. ระบบแสดง popup (1 รูป)
+// 2. popup แสดงรูปทีละภาพ + ปุ่มเลื่อน
 // -----------------------------
+let imageList = [];
+let currentIndex = 0;
 let panzoomInstance = null;
+
 function showPopup(src) {
-  const overlay = document.getElementById('overlay');
-  const popup = document.getElementById('popup');
-  const img1 = document.getElementById('popupImg1');
-  const img2 = document.getElementById('popupImg2');
-
-  // แสดงเฉพาะ img1
-  img1.parentElement.style.display = 'block';
-  img2.parentElement.style.display = 'none';
-  img1.src = src;
-  img1.alt = `รูปภาพ ${src.split('/').pop()}`;
-
-  overlay.classList.add('show');
-  popup.classList.add('show');
-
-  // เคลียร์ panzoom เก่าก่อน
-  if (panzoomInstance) panzoomInstance.dispose();
-
-  img1.onload = () => {
-    panzoomInstance = Panzoom(img1.parentElement, {
-      contain: 'outside',
-      maxScale: 5,
-      minScale: 1,
-      startScale: 1,
-    });
-  };
+  imageList = [src];
+  currentIndex = 0;
+  displayImage();
 }
 
-// -----------------------------
-// 3. popup แบบ 2 รูป
-// -----------------------------
 function showPopupWithTwoImages(src1, src2) {
+  imageList = [src1, src2];
+  currentIndex = 0;
+  displayImage();
+}
+
+function displayImage() {
   const overlay = document.getElementById('overlay');
   const popup = document.getElementById('popup');
-  const img1 = document.getElementById('popupImg1');
-  const img2 = document.getElementById('popupImg2');
+  const popupImg = document.getElementById('popupImg');
+  const wrapper = document.getElementById('imgWrapper');
+  const popupContent = popup.querySelector('.popup-content');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
 
-  img1.src = src1;
-  img2.src = src2;
-  img1.alt = `รูปภาพ ${src1.split('/').pop()}`;
-  img2.alt = `รูปภาพ ${src2.split('/').pop()}`;
-
-  img1.parentElement.style.display = 'block';
-  img2.parentElement.style.display = 'block';
-
+  popupImg.src = imageList[currentIndex];
+  popupImg.alt = `รูปภาพ ${imageList[currentIndex].split('/').pop()}`;
   overlay.classList.add('show');
   popup.classList.add('show');
 
-  if (panzoomInstance) panzoomInstance.dispose();
+  // แสดง/ซ่อนปุ่มเลื่อน
+  if (imageList.length <= 1) {
+    prevBtn.style.display = 'none';
+    nextBtn.style.display = 'none';
+  } else {
+    prevBtn.style.display = 'inline-block';
+    nextBtn.style.display = 'inline-block';
+  }
 
-  img1.onload = () => {
-    panzoomInstance = Panzoom(img1.parentElement, {
+  // แอนิเมชัน popup
+  popup.classList.remove('animated');
+  void popup.offsetWidth;
+  popup.classList.add('animated');
+
+  // ล้าง panzoom เก่า
+  panzoomInstance?.destroy?.();
+  panzoomInstance = null;
+
+  popupImg.onload = () => {
+    const naturalWidth = popupImg.naturalWidth;
+    const naturalHeight = popupImg.naturalHeight;
+    const maxWidth = window.innerWidth * 0.9;
+    const maxHeight = window.innerHeight * 0.9;
+    const widthRatio = maxWidth / naturalWidth;
+    const heightRatio = maxHeight / naturalHeight;
+    const scaleRatio = Math.min(widthRatio, heightRatio, 1);
+    const displayWidth = naturalWidth * scaleRatio;
+    const displayHeight = naturalHeight * scaleRatio;
+
+    popup.style.width = displayWidth + 20 + 'px';
+    popup.style.height = displayHeight + 20 + 'px';
+    popupContent.style.width = displayWidth + 'px';
+    popupContent.style.height = displayHeight + 'px';
+
+    panzoomInstance = Panzoom(wrapper, {
       contain: 'outside',
       maxScale: 5,
       minScale: 1,
-      startScale: 1,
-    });
-  };
-
-  img2.onload = () => {
-    Panzoom(img2.parentElement, {
-      contain: 'outside',
-      maxScale: 5,
-      minScale: 1,
-      startScale: 1,
     });
   };
 }
 
-// -----------------------------
-// 4. ปิด popup
-// -----------------------------
-function hidePopup() {
-  document.getElementById('popup').classList.remove('show');
-  document.getElementById('overlay').classList.remove('show');
-  document.getElementById('popupImg1').src = '';
-  document.getElementById('popupImg2').src = '';
-  document.getElementById("img2-container").style.display = "none"
-  if (panzoomInstance) {
-    panzoomInstance.dispose();
-    panzoomInstance = null;
-  }
-   // ออกจาก fullscreen ถ้ายังอยู่ใน fullscreen
-  if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
-    } else if (document.mozCancelFullScreen) {
-      document.mozCancelFullScreen();
-    } else if (document.msExitFullscreen) {
-      document.msExitFullscreen();
-    }
+function nextImage() {
+  if (currentIndex < imageList.length - 1) {
+    currentIndex++;
+    displayImage();
   }
 }
 
-// ปิด popup เมื่อกดปุ่ม Escape
+function prevImage() {
+  if (currentIndex > 0) {
+    currentIndex--;
+    displayImage();
+  }
+}
+
+function closePopup() {
+  const overlay = document.getElementById('overlay');
+  const popup = document.getElementById('popup');
+  popup.classList.add('hide');
+  setTimeout(() => {
+    overlay.classList.remove('show');
+    popup.classList.remove('hide');
+  }, 300);
+}
+
+// -----------------------------
+// 3. Escape key ปิด popup
+// -----------------------------
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') hidePopup();
+  if (e.key === 'Escape') closePopup();
 });
 
 // -----------------------------
-// 5. Fullscreen toggle
+// 4. toggle full screen
 // -----------------------------
 function toggleFullScreen() {
   const elem = document.querySelector('.popup-content');
   if (!document.fullscreenElement) {
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } else if (elem.webkitRequestFullscreen) {
-      elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) {
-      elem.msRequestFullscreen();
-    }
+    elem.requestFullscreen?.() || elem.webkitRequestFullscreen?.() || elem.msRequestFullscreen?.();
   } else {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
-    } else if (document.msExitFullscreen) {
-      document.msExitFullscreen();
-    }
+    document.exitFullscreen?.() || document.webkitExitFullscreen?.() || document.msExitFullscreen?.();
   }
 }
 
-// ฟัง event fullscreenchange เพื่อรีเซ็ต style
 document.addEventListener('fullscreenchange', () => {
-  if (!document.fullscreenElement) {
-    console.log('Fullscreen mode exited');
-
-    // รีเซ็ต transform หรือ scale ถ้าใช้ panzoom
-    if (panzoomInstance) {
-      panzoomInstance.reset();  // หรือ dispose + สร้างใหม่ตามต้องการ
-    }
-
-    // รีเซ็ต style popup-content
-    const popupContent = document.querySelector('.popup-content');
-    if (popupContent) {
-      popupContent.style.width = '';
-      popupContent.style.height = '';
-      popupContent.style.transform = '';
-    }
+  if (!document.fullscreenElement && panzoomInstance) {
+    panzoomInstance.reset();
   }
 });
 
-
 // -----------------------------
-// 6. Dark mode
+// 5. dark mode toggle
 // -----------------------------
 function toggleDarkMode() {
   document.body.classList.toggle('dark');
 }
-// สร้าง Audio object สำหรับเสียง hover
+
+// -----------------------------
+// 6. hover sound effect
+// -----------------------------
 const hoverSound = new Audio('sounds/hoversound.wav');
 
-// ฟังก์ชันเล่นเสียงตอน hover
 function playHoverSound() {
-  hoverSound.currentTime = 0; // เล่นซ้ำตั้งแต่ต้น
-  hoverSound.play().catch(() => {
-    // เงียบถ้า browser block autoplay
-  });
+  hoverSound.currentTime = 0;
+  hoverSound.play().catch(() => {});
 }
 
-// เพิ่ม event listener ให้กับ submenu ทุกตัวตอนโหลดเสร็จ
 document.addEventListener('DOMContentLoaded', () => {
   const submenuItems = document.querySelectorAll('.submenu li');
   submenuItems.forEach(item => {
@@ -227,52 +191,34 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+// -----------------------------
+// 7. mobile menu toggle
+// -----------------------------
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobileMenu');
+  if (menu.classList.contains('open')) {
+    menu.classList.remove('open');
+    setTimeout(() => menu.classList.add('hidden'), 400);
+  } else {
+    menu.classList.remove('hidden');
+    setTimeout(() => menu.classList.add('open'), 10);
+  }
+}
 
+// -----------------------------
+// 8. sidebar toggle
+// -----------------------------
 function toggleSidebar() {
   document.querySelectorAll('.sidebar').forEach(sidebar => {
     sidebar.classList.toggle('active');
   });
 }
 
-
-
-function toggleMobileMenu() {
-  const menu = document.getElementById('mobileMenu');
-  menu.classList.toggle('open');
-}
-function toggleMobileMenu() {
-  const menu = document.getElementById('mobileMenu');
-  
-  // ถ้าเมนูกำลังเปิดอยู่ให้ปิด (remove class open)
-  if (menu.classList.contains('open')) {
-    menu.classList.remove('open');
-    // รอสักครู่ให้แอนิเมชั่น max-height หมด แล้วซ่อนด้วย hidden
-    setTimeout(() => {
-      menu.classList.add('hidden');
-    }, 400); // เวลา 400ms ต้องตรงกับ CSS transition
-  } else {
-    // ถ้าเมนูปิดอยู่ ให้แสดงเมนูก่อน (เอา hidden ออก)
-    menu.classList.remove('hidden');
-    // รอ next tick แล้วเพิ่ม class open เพื่อให้เกิดแอนิเมชั่น
-    setTimeout(() => {
-      menu.classList.add('open');
-    }, 10);
+// -----------------------------
+// 9. ปิด popup เมื่อคลิกพื้นที่ว่าง
+// -----------------------------
+document.getElementById('overlay').addEventListener('click', function (e) {
+  if (e.target === this) {
+    closePopup();
   }
-}
-function fullscreenImage() {
-  const img1 = document.getElementById('popupImg1');
-  const img2 = document.getElementById('popupImg2');
-
-  // เลือกภาพที่กำลังแสดงอยู่
-  const activeImage = img2 && img2.src && img2.parentElement.style.display !== 'none' ? img2 : img1;
-
-  if (activeImage.requestFullscreen) {
-    activeImage.requestFullscreen();
-  } else if (activeImage.webkitRequestFullscreen) {
-    activeImage.webkitRequestFullscreen();
-  } else if (activeImage.msRequestFullscreen) {
-    activeImage.msRequestFullscreen();
-  } else {
-    alert("อุปกรณ์ของคุณไม่รองรับ Fullscreen");
-  }
-}
+});
