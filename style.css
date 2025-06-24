@@ -1030,3 +1030,25 @@ details ul li:hover {
 .map-container {
   animation: fadeSlideUp 0.8s ease-out;
 }
+/* ปรับขนาด Google Map เฉพาะบนคอม (จอกว้างกว่า 768px) */
+@media screen and (min-width: 768px) {
+  .map-container1 {
+    width: 68%;
+    height: 300px;
+    margin: 20px auto;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* บนมือถือ ใช้ขนาดเต็มหน้าจอ */
+@media screen and (max-width: 767px) {
+  .map-container1 {
+    width: 90%;
+    height: 100px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  }
+}
