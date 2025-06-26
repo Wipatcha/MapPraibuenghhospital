@@ -715,8 +715,8 @@ body.dark .zoom-controls button.fullscreen-btn {
 }
 
 .mobile-menu {
-  background-color: rgba(0, 0, 0, 0.199);
-  color: rgb(0, 0, 0);
+  background-color: rgba(110, 109, 109, 0.199);
+  color: rgb(255, 255, 255);
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   width: 100%;
   padding: 10px;
@@ -826,7 +826,7 @@ details ul {
   list-style: none;
   margin: 0;
   padding: 0;
-  background-color: #3b3b3b5b;
+  background-color: #6b69695b;
 }
 
 /* รายการย่อย */
@@ -834,7 +834,7 @@ details ul li {
   padding: 12px 20px;
   border-bottom: 1px solid #ddd;
   font-size: 15px;
-  color: #333;
+  color: #000000;
   text-align: center;
 }
 
