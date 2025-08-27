@@ -1,3 +1,6 @@
+// -----------------------------
+// 1. สลับเมนูย่อยพร้อมแอนิเมชัน
+// -----------------------------
 function toggleSubmenu(id, toggleBtn) {
   const submenu = document.getElementById(id);
   const isExpanded = submenu.classList.contains('show');
